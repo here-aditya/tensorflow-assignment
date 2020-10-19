@@ -50,15 +50,16 @@ exports.fetchUserList = async (req, res, next) => {
 
 exports.updateUser = async (req, res, next) => {
     try {
-        let sel_user_id = req.params.id;
-        let query = `UPDATE tbl_user_master SET name = {req.body.name}, email = {req.body.email}, gender = {req.body.gender}, 
-        status = {req.body.status}, updated_at = current_timestamp();`;
-        let queryRes = await mysql_con.dbQuery(query);
+        const sel_user_id = req.params.id;
+        const query = `UPDATE tbl_user_master SET name = '${req.body.name}', email = '${req.body.email}', gender = '${req.body.gender}', 
+                        status = '${req.body.status}', updated_at = current_timestamp() WHERE id = ${sel_user_id};`;
+        console.log(query);
+        const queryRes = await mysql_con.dbQuery(query);
 
         if(queryRes.changedRows) {
             res.json({ status: 'success', data: 'Data updated for id =' + sel_user_id });
         } else {
-            throw new Error('DB Error');
+            throw new Error('No match found');
         }
     } catch (err) {
         console.log(err);
